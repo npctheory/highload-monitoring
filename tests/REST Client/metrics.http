@@ -1,0 +1,4 @@
+@host=localhost:5001
+
+### Get Metrics
+GET http://{{host}}/metrics

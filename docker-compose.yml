@@ -107,14 +107,14 @@ services:
       - "8180:80"
       - "8182:82"
       
-  redisinsight:
-    image: redis/redisinsight:latest
-    container_name: redisinsight
-    restart: unless-stopped
-    ports:
-      - "5540:5540"
-    networks:
-      - highload_net
+  # redisinsight:
+  #   image: redis/redisinsight:latest
+  #   container_name: redisinsight
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5540:5540"
+  #   networks:
+  #     - highload_net
 
 volumes:
   pg_master:
