@@ -22,21 +22,6 @@ services:
       start_period: 30s
     networks:
       - highload_net
- 
- 
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    networks:
-      - highload_net
 
   redis:
     image: redis:latest
@@ -45,44 +30,73 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - highload_net
+      - highload_net 
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
+  # rabbitmq:
+    # image: rabbitmq:3-management
+    # container_name: rabbitmq
+    # restart: unless-stopped
+    # ports:
+      # - "5672:5672"
+      # - "15672:15672"
+    # networks:
+      # - highload_net
+    # environment:
+      # RABBITMQ_DEFAULT_USER: guest
+      # RABBITMQ_DEFAULT_PASS: guest
+
+  # core:
+    # build:
+      # context: ./server
+      # dockerfile: ./Core.Api/Dockerfile
+    # image: core:local
+    # container_name: core
+    # restart: unless-stopped
+    # environment:
+      # PRIMARY_DB_HOST: pg_master
+      # PRIMARY_DB_PORT: 5432
+      # PRIMARY_DB_NAME: highloadsocial
+      # PRIMARY_DB_USER: postgres
+      # PRIMARY_DB_PASSWORD: postgres
+      # ASPNETCORE_ENVIRONMENT: Production
+      # ASPNETCORE_URLS: "http://*:80"
+      # DIALOGS_GRPC_URL: "http://dialogs:82"
+    # depends_on:
+      # pg_master:
+        # condition: service_healthy
+    # networks:
+      # - highload_net
+    # ports:
+      # - "8080:80"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
     restart: unless-stopped
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - highload_net
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-
-  core:
-    build:
-      context: ./server
-      dockerfile: ./Core.Api/Dockerfile
-    image: core:local
-    container_name: core
+      
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
     restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana_data:/var/lib/grafana
     environment:
-      PRIMARY_DB_HOST: pg_master
-      PRIMARY_DB_PORT: 5432
-      PRIMARY_DB_NAME: highloadsocial
-      PRIMARY_DB_USER: postgres
-      PRIMARY_DB_PASSWORD: postgres
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: "http://*:80"
-      DIALOGS_GRPC_URL: "http://dialogs:82"
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
-      pg_master:
-        condition: service_healthy
+      - prometheus
     networks:
       - highload_net
-    ports:
-      - "8080:80"
 
   dialogs:
     build:
@@ -106,7 +120,21 @@ services:
     ports:
       - "8180:80"
       - "8182:82"
-      
+
+  # pgadmin:
+    # image: dpage/pgadmin4:latest
+    # container_name: pgadmin
+    # restart: unless-stopped
+    # environment:
+      # PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      # PGADMIN_DEFAULT_PASSWORD: admin
+    # ports:
+      # - "5050:80"
+    # volumes:
+      # - pgadmin_data:/var/lib/pgadmin
+    # networks:
+      # - highload_net 
+ 
   # redisinsight:
   #   image: redis/redisinsight:latest
   #   container_name: redisinsight
@@ -119,6 +147,7 @@ services:
 volumes:
   pg_master:
   pgadmin_data:
+  grafana_data:
 
 networks:
   highload_net:
