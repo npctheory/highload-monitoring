@@ -19,13 +19,13 @@ public class ErrorTrackingMiddleware
     {
         try
         {
-            await _next(context); // Call the next middleware
+            await _next(context);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unhandled exception occurred while processing the request.");
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError; // Set the response status code
-            await context.Response.WriteAsync("An error occurred while processing your request."); // Optional error message
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync("An error occurred while processing your request.");
         }
     }
 }

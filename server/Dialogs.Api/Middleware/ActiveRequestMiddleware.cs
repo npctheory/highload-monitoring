@@ -18,22 +18,22 @@ public class ActiveRequestMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        Interlocked.Increment(ref _activeRequestCount); // Increment the active request count
+        Interlocked.Increment(ref _activeRequestCount);
         try
         {
             _logger.LogInformation("Processing request: {Path}", context.Request.Path);
-            await _next(context); // Call the next middleware in the pipeline
+            await _next(context);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while processing the request.");
-            throw; // Re-throw the exception to be handled by the next middleware
+            throw;
         }
         finally
         {
-            Interlocked.Decrement(ref _activeRequestCount); // Decrement the active request count
+            Interlocked.Decrement(ref _activeRequestCount);
         }
     }
 
-    public static int GetActiveRequestCount() => _activeRequestCount; // Method to get the active request count
+    public static int GetActiveRequestCount() => _activeRequestCount;
 }
