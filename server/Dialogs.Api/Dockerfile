@@ -1,25 +1,23 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY . .
-WORKDIR ./Dialogs.Api
-RUN dotnet restore
-RUN dotnet publish Dialogs.Api.csproj -c Release -o /app/publish
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+RUN apt-get update
+RUN apt-get install -y wget gnupg lsb-release
+RUN wget https://repo.zabbix.com/zabbix/6.4/debian/pool/main/z/zabbix-release/zabbix-release_6.4-1+debian12_all.deb
+RUN dpkg -i zabbix-release_6.4-1+debian12_all.deb
+RUN apt install zabbix-agent2
+COPY ./Dialogs.Api/zabbix-agent/zabbix_agent2.conf /etc/zabbix/zabbix_agent2.conf
+
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY . .
 
-# Ansible
-# RUN apt-get update && \
-#     apt-get install -y python3 python3-venv python3-pip && \
-#     python3 -m venv /opt/venv && \
-#     /opt/venv/bin/python -m pip install --upgrade pip && \
-#     /opt/venv/bin/python -m pip install psycopg2-binary requests==2.31.0
-# ENV VIRTUAL_ENV=/opt/venv
-# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV PATH="$PATH:/root/.dotnet/tools"
+ENV ASPNETCORE_ENVIRONMENT=Production
 
-ARG UID=10001
-RUN adduser --disabled-password --gecos "" --home "/nonexistent" --shell "/sbin/nologin" --no-create-home --uid "${UID}" appuser
-USER appuser
-EXPOSE 80
-ENTRYPOINT ["dotnet", "Dialogs.Api.dll"]
+RUN dotnet restore ./Dialogs.Api/Dialogs.Api.csproj
+RUN dotnet publish ./Dialogs.Api/Dialogs.Api.csproj -c Release -o /app/publish
+
+WORKDIR /app/publish
+
+EXPOSE 80 82 10050 5001
+
+ENTRYPOINT ["sh", "-c", "zabbix_agent2 -f & dotnet Dialogs.Api.dll"]

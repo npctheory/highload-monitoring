@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -81,7 +81,32 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "{__name__=\"http_server_request_duration_seconds_count\", aspnetcore_request_is_unhandled=\"true\", http_request_method=\"POST\", http_response_status_code=\"404\", instance=\"dialogs:5001\", job=\"dotnet-app\", network_protocol_version=\"1.1\", otel_scope_name=\"Microsoft.AspNetCore.Hosting\", url_scheme=\"http\"}"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 7,
@@ -109,14 +134,14 @@
             "uid": "adz6mon38m0hsc"
           },
           "editorMode": "code",
-          "expr": "process_cpu_time_seconds_total",
+          "expr": "http_server_request_duration_seconds_count",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Utilization",
+      "title": "Rate",
       "type": "timeseries"
     },
     {
@@ -207,14 +232,14 @@
             "uid": "adz6mon38m0hsc"
           },
           "editorMode": "code",
-          "expr": "http_server_active_requests",
+          "expr": "http_server_request_duration_seconds_sum",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Saturation",
+      "title": "Duration",
       "type": "timeseries"
     },
     {
@@ -312,7 +337,7 @@
           "refId": "A"
         }
       ],
-      "title": "Exceptions",
+      "title": "Errors",
       "type": "timeseries"
     }
   ],
@@ -329,8 +354,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "USE",
-  "uid": "cdz6napodbv9cd",
-  "version": 1,
+  "title": "RED",
+  "uid": "cdza7z48lemtcc",
+  "version": 2,
   "weekStart": ""
 }

@@ -121,6 +121,41 @@ services:
       - "8180:80"
       - "8182:82"
 
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:alpine-trunk
+    container_name: zabbix-server
+    restart: unless-stopped
+    environment:
+      DB_SERVER_HOST: pg_master
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: zabbix
+    ports:
+      - "10052:10051"
+    depends_on:
+      pg_master:
+        condition: service_healthy
+    networks:
+      - highload_net
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:alpine-trunk
+    container_name: zabbix-web
+    restart: unless-stopped
+    environment:
+      DB_SERVER_HOST: pg_master
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      ZBX_SERVER_NAME: "Zabbix Server"
+      ZBX_SERVER_HOST: zabbix-server
+    ports:
+      - "10054:8080"
+    depends_on:
+      pg_master:
+        condition: service_healthy
+    networks:
+      - highload_net
+      
   # pgadmin:
     # image: dpage/pgadmin4:latest
     # container_name: pgadmin
