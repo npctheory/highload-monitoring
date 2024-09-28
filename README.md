@@ -14,7 +14,7 @@ cd highload-monitoring
 docker compose up --build -d
 ```
 ### Zabbix  
-Агента находится на той же машине что и микросервис Dialogs. Устанавливается в [докерфайле](https://github.com/npctheory/highload-monitoring/blob/main/server/Dialogs.Api/Dockerfile). Сервер и Веб-интерфейс подключаются в docker-compose.yml. БД в pg_master.  
+Агент находится на той же машине что и микросервис Dialogs. Устанавливается в [докерфайле](https://github.com/npctheory/highload-monitoring/blob/main/server/Dialogs.Api/Dockerfile). Сервер и Веб-интерфейс подключаются в docker-compose.yml. БД в pg_master.  
 Веб-интерфейс доступен по адресу [http://localhost:10054/](http://localhost:10054/).  
 
 
