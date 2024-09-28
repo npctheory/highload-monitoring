@@ -1,12 +1,18 @@
-### Запросы к серверу gRPC микросервиса диалогов
+### О проекте
+Домашнее задание по мониторингу.  
+Проект состоит из следующих компонентов:  
+* Солюшен .NET в папке ./server, который собирается в два образа: core:local и dialogs:local (контейнеры core и dialogs).
+* Dockerfile и сид базы данных postgres в папке ./db, который собирается в образ db:local (контейнер pg_master).
+* В папке tests находятся запросы для расширения VSCode REST Client и экспорты коллекций и окружений Postman.
+* В docker-compose.yml подключаются Redis, Redis Insight, RabbitMQ, PGAdmin, Prometheus, Grafana, сервер Zabbix, Web-GUI Zabbix.
+### Начало работы
+Склонировать проект, сделать cd в корень репозитория и запустить Docker Compose.  
+Дождаться статуса healthy на контейнерах postgres.  
 ```bash
-grpcurl -plaintext localhost:8182 list
-
-grpcurl -plaintext localhost:8182 list dialog.DialogService
-
-grpcurl -plaintext -d '{"user_id": "User"}' localhost:8182 dialog.DialogService/ListDialogs
-
-grpcurl -plaintext -d '{"user_id": "User", "agent_id": "Admin"}' localhost:8182 dialog.DialogService/ListMessages
-
-grpcurl -plaintext -d '{"sender_id": "User", "receiver_id": "Admin", "text": "Sup 123"}' localhost:8182 dialog.DialogService/SendMessage
+https://github.com/npctheory/highload-monitoring.git
+cd highload-monitoring
+docker compose up --build -d
 ```
+### Zabbix  
+
+### Prometheus-Grafana
