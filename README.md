@@ -18,6 +18,8 @@ docker compose up --build -d
 Веб-интерфейс доступен по адресу [http://localhost:10054/](http://localhost:10054/).  
 Как зайти в веб-интерфейс Zabbix:  
 
+[zabbix.webm](https://github.com/user-attachments/assets/63c954db-91e3-4cc4-9046-1db918f5b6c5)
+
 
 ### Prometheus-Grafana  
 Из микросервиса Dialogs в формате OpenTelemetry экспортируются метрики в Promehteus. Как подключается экспортер: [Dialogs.Api/Program.cs](https://github.com/npctheory/highload-monitoring/blob/main/server/Dialogs.Api/Program.cs):  
@@ -45,4 +47,5 @@ Prometheus и Grafana подключаются в docker-compose.yml.
 В Grafana импортируются готовые дата-сорс и дашборд.  
 Как запустить дашборд Grafana:  
 
+[prometheusgrafana.webm](https://github.com/user-attachments/assets/1c92ace5-d681-4758-875a-88632ae5192c)
 
