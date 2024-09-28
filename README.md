@@ -16,11 +16,11 @@ docker compose up --build -d
 ### Zabbix  
 Агент находится на той же машине что и микросервис Dialogs. Устанавливается в [докерфайле](https://github.com/npctheory/highload-monitoring/blob/main/server/Dialogs.Api/Dockerfile). Сервер и Веб-интерфейс подключаются в docker-compose.yml. БД в pg_master.  
 Веб-интерфейс доступен по адресу [http://localhost:10054/](http://localhost:10054/).  
-
+Как зайти в веб-интерфейс Zabbix:  
 
 
 ### Prometheus-Grafana  
-Настройки телеметрии [Dialogs.Api/Program.cs](https://github.com/npctheory/highload-monitoring/blob/main/server/Dialogs.Api/Program.cs):  
+Из микросервиса Dialogs в формате OpenTelemetry экспортируются метрики в Promehteus. Как подключается экспортер: [Dialogs.Api/Program.cs](https://github.com/npctheory/highload-monitoring/blob/main/server/Dialogs.Api/Program.cs):  
 ```csharp
 builder.Services.AddOpenTelemetry()
     .WithMetrics(x =>
@@ -40,4 +40,9 @@ builder.Services.AddOpenTelemetry()
         });
     });
 ```
-Контейнер доступен по адресу [http://localhost:3000]([url](http://localhost:3000)).
+Prometheus и Grafana подключаются в docker-compose.yml.  
+Контейнер Grafana доступен по адресу [http://localhost:3000]([url](http://localhost:3000)).  
+В Grafana импортируются готовые дата-сорс и дашборд.  
+Как запустить дашборд Grafana:  
+
+
