@@ -14,7 +14,7 @@ cd highload-monitoring
 docker compose up --build -d
 ```
 ### Zabbix  
-Настройки агента находится в [докерфайле](https://github.com/npctheory/highload-monitoring/blob/main/server/Dialogs.Api/Dockerfile) Dialogs. БД в pg_master.  
+Настройки агента находится в [докерфайле](https://github.com/npctheory/highload-monitoring/blob/main/server/Dialogs.Api/Dockerfile). БД в pg_master.  
 Веб-интерфейс доступен по адресу [http://localhost:10054/](http://localhost:10054/).  
 
 
