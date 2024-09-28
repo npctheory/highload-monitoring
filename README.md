@@ -43,7 +43,7 @@ builder.Services.AddOpenTelemetry()
     });
 ```
 Prometheus и Grafana подключаются в docker-compose.yml.  
-Контейнер Grafana доступен по адресу [http://localhost:3000]([url](http://localhost:3000)).  
+Контейнер Grafana доступен по адресу [http://localhost:3000](http://localhost:3000).  
 В Grafana импортируются готовые дата-сорс и дашборд.  
 Как запустить дашборд Grafana:  
 
