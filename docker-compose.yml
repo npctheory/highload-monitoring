@@ -1,9 +1,47 @@
 services:
+  core:
+    image: towk/core:latest
+    container_name: core
+    restart: unless-stopped
+    environment:
+      PRIMARY_DB_HOST: pg_master
+      PRIMARY_DB_PORT: 5432
+      PRIMARY_DB_NAME: highloadsocial
+      PRIMARY_DB_USER: postgres
+      PRIMARY_DB_PASSWORD: postgres
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: "http://*:80"
+      DIALOGS_GRPC_URL: "http://dialogs:82"
+    depends_on:
+      pg_master:
+        condition: service_healthy
+    networks:
+      - highload_net
+    ports:
+      - "8080:80"
+
+  dialogs:
+    image: towk/dialogs:latest
+    container_name: dialogs
+    restart: unless-stopped
+    environment:
+      primary_db_host: pg_master
+      primary_db_port: 5432
+      primary_db_name: highloadsocial
+      primary_db_user: postgres
+      primary_db_password: postgres
+      aspnetcore_environment: Production
+    depends_on:
+      pg_master:
+        condition: service_healthy
+    networks:
+      - highload_net
+    ports:
+      - "8180:80"
+      - "8182:82"
+
   pg_master:
-    build:
-      context: ./db
-      dockerfile: Dockerfile
-    image: db:local
+    image: towk/db:latest
     container_name: pg_master
     restart: unless-stopped
     environment:
@@ -32,42 +70,18 @@ services:
     networks:
       - highload_net 
 
-  # rabbitmq:
-    # image: rabbitmq:3-management
-    # container_name: rabbitmq
-    # restart: unless-stopped
-    # ports:
-      # - "5672:5672"
-      # - "15672:15672"
-    # networks:
-      # - highload_net
-    # environment:
-      # RABBITMQ_DEFAULT_USER: guest
-      # RABBITMQ_DEFAULT_PASS: guest
-
-  # core:
-    # build:
-      # context: ./server
-      # dockerfile: ./Core.Api/Dockerfile
-    # image: core:local
-    # container_name: core
-    # restart: unless-stopped
-    # environment:
-      # PRIMARY_DB_HOST: pg_master
-      # PRIMARY_DB_PORT: 5432
-      # PRIMARY_DB_NAME: highloadsocial
-      # PRIMARY_DB_USER: postgres
-      # PRIMARY_DB_PASSWORD: postgres
-      # ASPNETCORE_ENVIRONMENT: Production
-      # ASPNETCORE_URLS: "http://*:80"
-      # DIALOGS_GRPC_URL: "http://dialogs:82"
-    # depends_on:
-      # pg_master:
-        # condition: service_healthy
-    # networks:
-      # - highload_net
-    # ports:
-      # - "8080:80"
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - highload_net
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
 
   prometheus:
     image: prom/prometheus
@@ -97,29 +111,6 @@ services:
       - prometheus
     networks:
       - highload_net
-
-  dialogs:
-    build:
-      context: ./server
-      dockerfile: ./Dialogs.Api/Dockerfile
-    image: dialogs:local
-    container_name: dialogs
-    restart: unless-stopped
-    environment:
-      primary_db_host: pg_master
-      primary_db_port: 5432
-      primary_db_name: highloadsocial
-      primary_db_user: postgres
-      primary_db_password: postgres
-      aspnetcore_environment: Production
-    depends_on:
-      pg_master:
-        condition: service_healthy
-    networks:
-      - highload_net
-    ports:
-      - "8180:80"
-      - "8182:82"
 
   zabbix-server:
     image: zabbix/zabbix-server-pgsql:alpine-trunk
