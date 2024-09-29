@@ -1,6 +1,5 @@
 name: Publish Docker Images
 
-# Only run this workflow when triggered manually via the 'workflow_dispatch' event
 on:
   workflow_dispatch:
 
